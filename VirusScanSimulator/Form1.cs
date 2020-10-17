@@ -24,7 +24,8 @@ namespace VirusScanSimulator
             //            var progress = new Progress<string>(s => txtResults.Text += (s + Environment.NewLine));
             var progress = new Progress<VirusScanResult>(s => { 
                                                                 int i; 
-                                                                txtResults.Text += (s.virusName + " : " + s.infectedFile + Environment.NewLine); 
+                                                                txtResults.Text = (s.virusName + " : " + s.infectedFile + Environment.NewLine + txtResults.Text);
+                                                                lblVirusName.Text = s.virusName;
                                                               }) ;
 //            await Task.Factory.StartNew(() => SecondThreadConcern.LongWork(progress),
 //                                        TaskCreationOptions.LongRunning);
@@ -34,6 +35,11 @@ namespace VirusScanSimulator
         private void CallMe(VirusScanResult virusScanResult)
         {
             txtResults.AppendText(virusScanResult.virusName + "\n");
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
