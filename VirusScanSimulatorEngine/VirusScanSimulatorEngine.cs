@@ -21,7 +21,7 @@ namespace VirusScanSimulatorEngineNamespace
         private Thread thread;
         private Action<VirusScanResult> CallMe;
         private TimeSpan timeSpan;
-        private static String[] names = {"Valid Restaurant", "Celebrate your worm", "Internet Explorer 5.0", "More than a virus", "All your bytes are belong to us", "Your computer is sick", "Virus 1.01", "ScriptKiddie 1000", "Can't erase this", "Probably won't work but I tried", "NULL",  "Downloader Rocks", "Honda Civic Athletic Happy Confictor", "Get Off my Yard", "Local Traffic Online", "Hosting Service Zombie", "Wanna Cry", "Killer Code", "Amoeba Virus", "Ara Parsegian", "Hyper Infection for U", "Winner Winner Chicken Dinner", "gIvE mE aLl yOuR BiTCoInS", "X-Ray-01", "Pikachu Hates You", "Bengals Blitzer", "Spooner Maximus", "Wormy McWorm Face", "Happy Infection", "Upset Infector", "QQQQ-34.01.a.42", "Really Really Good Trojan Horse", "Unidentified but probably bad", "You do not want this", "Outstanding Coding My Friend", "Thunder Maker", "Debug this", "I now a lot", "I now a lot .01", "I know a lot .02" };
+        private static String[] names = {"Valid Restaurant", "Celebrate your worm","cannot not stop me", "configure master 12.4","Progress is me", "trophy software", "I got it", "I got it now","I got you sick 3.4", "Internet Explorer 5.0", "More than a virus", "All your bytes are belong to us", "Your computer is sick", "Virus 1.01", "ScriptKiddie 1000", "Can't erase this", "Probably won't work but I tried", "NULL",  "Downloader Rocks", "Honda Civic Athletic Happy Confictor", "Get Off my Yard", "Local Traffic Online", "Hosting Service Zombie", "Wanna Cry", "Killer Code", "Amoeba Virus", "Ara Parsegian", "Hyper Infection for U", "Winner Winner Chicken Dinner", "gIvE mE aLl yOuR BiTCoInS", "X-Ray-01", "Pikachu Hates You", "Bengals Blitzer", "Spooner Maximus", "Wormy McWorm Face", "Happy Infection", "Upset Infector", "QQQQ-34.01.a.42", "Really Really Good Trojan Horse", "Unidentified but probably bad", "You do not want this", "Outstanding Coding My Friend", "Thunder Maker", "Debug this", "I now a lot", "I now a lot .01", "I know a lot .02" };
         private IProgress<VirusScanResult> progress;
         private List<String> files;
         /// <summary>
@@ -39,6 +39,7 @@ namespace VirusScanSimulatorEngineNamespace
             this.timeSpan = new TimeSpan(0, 0, seconds);
             this.progress = progress;
             thread = new Thread(this.ThreadStartCallMe);
+            files = new List<String>();
             thread.Start();
             return thread;
         }
@@ -48,7 +49,8 @@ namespace VirusScanSimulatorEngineNamespace
         /// </summary>
         private void ThreadStartCallMe()
         {
-            files = ReadFiles("c:\\Windows\\");
+            ReadFiles(files, "c:\\Windows\\");
+            ReadFiles(files, "C:\\Windows\\System32\\");
             DateTime start = new DateTime();
             start = DateTime.Now;
             VirusScanResult virusScanResult;
@@ -85,24 +87,20 @@ namespace VirusScanSimulatorEngineNamespace
         {
             String name = names[random.Next(0, names.Length - 1)];
             String infectedFile = files[random.Next(0, files.Count - 1)];
-            VirusScanResult virusScanResult = new VirusScanResult(name, infectedFile);
+            double version = random.NextDouble();
+            VirusScanResult virusScanResult = new VirusScanResult(name, infectedFile, version);
             return virusScanResult;
         }
-        List<String> ReadFiles(String path)
+        void ReadFiles(List<String> files, String path)
         {
-            List<String> files = new List<String>();
             try
             {
                 string[] fileEntries = Directory.GetFiles(path);
-                foreach (string file in fileEntries)
-                {
-                    if (File.Exists(file))
-                    {
+                foreach (string file in fileEntries) {
+                    if (File.Exists(file)) {
                         // This path is a file
                         files.Add(file);
-                    }
-                    else if (Directory.Exists(path))
-                    {
+                    } else if (Directory.Exists(path)) {
                     }
                     else
                     {
@@ -112,7 +110,7 @@ namespace VirusScanSimulatorEngineNamespace
             } catch (Exception ex) {
                 files.Add("UNKNOWN FILE");
             }
-            return files;
+//          return files;
         }
     }
 }
