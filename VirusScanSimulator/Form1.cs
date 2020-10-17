@@ -21,8 +21,11 @@ namespace VirusScanSimulator
 
         private async void button1_Click(object sender, EventArgs e)
         {
-//            var progress = new Progress<string>(s => txtResults.Text += (s + Environment.NewLine));
-            var progress = new Progress<VirusScanResult>(s => txtResults.Text += (s.virusName + Environment.NewLine));
+            //            var progress = new Progress<string>(s => txtResults.Text += (s + Environment.NewLine));
+            var progress = new Progress<VirusScanResult>(s => { 
+                                                                int i; 
+                                                                txtResults.Text += (s.virusName + " : " + s.infectedFile + Environment.NewLine); 
+                                                              }) ;
 //            await Task.Factory.StartNew(() => SecondThreadConcern.LongWork(progress),
 //                                        TaskCreationOptions.LongRunning);
             VirusScanSimulatorEngine virusScanSimulatorEngine = new VirusScanSimulatorEngine();
