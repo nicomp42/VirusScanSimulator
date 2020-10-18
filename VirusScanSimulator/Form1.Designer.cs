@@ -32,6 +32,7 @@
             this.txtResults = new System.Windows.Forms.TextBox();
             this.lblVirusName = new System.Windows.Forms.Label();
             this.lblDescription = new System.Windows.Forms.Label();
+            this.lblScanStatus = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // btnStartScan
@@ -70,11 +71,21 @@
             this.lblDescription.Size = new System.Drawing.Size(0, 13);
             this.lblDescription.TabIndex = 3;
             // 
+            // lblScanStatus
+            // 
+            this.lblScanStatus.AutoSize = true;
+            this.lblScanStatus.Location = new System.Drawing.Point(190, 51);
+            this.lblScanStatus.Name = "lblScanStatus";
+            this.lblScanStatus.Size = new System.Drawing.Size(0, 13);
+            this.lblScanStatus.TabIndex = 4;
+            this.lblScanStatus.Click += new System.EventHandler(this.label1_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.lblScanStatus);
             this.Controls.Add(this.lblDescription);
             this.Controls.Add(this.lblVirusName);
             this.Controls.Add(this.txtResults);
@@ -92,6 +103,7 @@
         private System.Windows.Forms.TextBox txtResults;
         private System.Windows.Forms.Label lblVirusName;
         private System.Windows.Forms.Label lblDescription;
+        private System.Windows.Forms.Label lblScanStatus;
     }
 }
 
