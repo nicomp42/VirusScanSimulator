@@ -19,9 +19,11 @@ namespace VirusScanSimulatorEngineNamespace
     {
         // private non-static class members. We will not be sharing them between threads
         private Thread thread;
-        private Action<VirusScanResult> CallMe;
         private TimeSpan timeSpan;
-        private static String[] names = {"Valid Restaurant", "Celebrate your worm","cannot not stop me", "configure master 12.4","Progress is me", "trophy software", "I got it", "I got it now","I got you sick 3.4", "Internet Explorer 5.0", "More than a virus", "All your bytes are belong to us", "Your computer is sick", "Virus 1.01", "ScriptKiddie 1000", "Can't erase this", "Probably won't work but I tried", "NULL",  "Downloader Rocks", "Honda Civic Athletic Happy Confictor", "Get Off my Yard", "Local Traffic Online", "Hosting Service Zombie", "Wanna Cry", "Killer Code", "Amoeba Virus", "Ara Parsegian", "Hyper Infection for U", "Winner Winner Chicken Dinner", "gIvE mE aLl yOuR BiTCoInS", "X-Ray-01", "Pikachu Hates You", "Bengals Blitzer", "Spooner Maximus", "Wormy McWorm Face", "Happy Infection", "Upset Infector", "QQQQ-34.01.a.42", "Really Really Good Trojan Horse", "Unidentified but probably bad", "You do not want this", "Outstanding Coding My Friend", "Thunder Maker", "Debug this", "I now a lot", "I now a lot .01", "I know a lot .02" };
+        private static String[] names = {"Valid Restaurant", "Just another virus", "me infect you", "Sinister config", "elderly experience", "college football", "download all your stuff", "Celebrate your worm","cannot not stop me", "configure master 12.4","Progress is me", "trophy software", "I got it", "I got it now","I got you sick 3.4", "Internet Explorer 5.0", "More than a virus", "All your bytes are belong to us", "Your computer is sick", "Virus 1.01", "ScriptKiddie 1000", "Find me 2000", "double trick you","infectYouOnly", "FInd me 3000x", "Find me 3000y", "Can't erase this", "Probably won't work but I tried", "NULL",  "Downloader Rocks", "Honda Civic Athletic Happy Confictor", "Get Off my Yard", "Local Traffic Online", "Hosting Service Zombie", "Wanna Cry", "Killer Code", "Amoeba Virus", "Ara Parsegian", "Hyper Infection for U", "Winner Winner Chicken Dinner", "gIvE mE aLl yOuR BiTCoInS", "X-Ray-01", "Pikachu Hates You", "Bengals Blitzer", "Spooner Maximus", "Wormy McWorm Face", "Happy Infection", "Upset Infector", "QQQQ-34.01.a.42", "Really Really Good Trojan Horse", "Unidentified but probably bad", "You do not want this", "Outstanding Coding My Friend", "Thunder Maker", "Debug this", "I now a lot", "I now a lot .01", "I know a lot .02" };
+        private static String[] fileVerbs = {"corrupts", "erases", "encrypts", "uploads", "copies", "transfers", "mirrors", "appends" , "disables", "replaces"};
+        private static String[] fileTypes = { "system", "user", "browser", "browser cookies", "MS Word", "MS Excel", "PDF", "system log", "backup", "temporary", "USB", "c: drive" };
+        private static String[] actions = {"logs keystrokes", "turns on camera", "sets printer on fire", "turns off CPU fans", "turns on microphone", "inverts monitor colors", "joins a bot net", "stores pirated videos", "steals your identity", "steals your bitcoins", "scans for bitcoin wallets", "sells your CPU useage", "changes desktop background", "hijacks browser default search engine", "replaces system.ini", "steals your registry", "downgrades to Windows XP", "hijacks router DNS table", "changes MAC address" };
         private IProgress<VirusScanResult> progress;
         private List<String> files;
         /// <summary>
@@ -33,9 +35,8 @@ namespace VirusScanSimulatorEngineNamespace
         /// <params name="seconds"> How long the sensor should run, in seconds. 
         ///  Use 0 for Test Mode: All doors set to Unknown for 5 seconds, then 30-second duration, All door toggle between open and closed every 5 seconds for 30 seconds.</params>
         /// <returns></returns>
-        public Thread StartEngine(IProgress<VirusScanResult> progress, Action<VirusScanResult> CallMe, int seconds)
+        public Thread StartEngine(IProgress<VirusScanResult> progress, int seconds)
         {
-            this.CallMe = CallMe;
             this.timeSpan = new TimeSpan(0, 0, seconds);
             this.progress = progress;
             thread = new Thread(this.ThreadStartCallMe);
@@ -49,8 +50,7 @@ namespace VirusScanSimulatorEngineNamespace
         /// </summary>
         private void ThreadStartCallMe()
         {
-            ReadFiles(files, "c:\\Windows\\");
-            ReadFiles(files, "C:\\Windows\\System32\\");
+            ReadFiles(files, new string[] { "c:\\Windows\\", "C:\\Windows\\System32\\", "c:\\" });
             DateTime start = new DateTime();
             start = DateTime.Now;
             VirusScanResult virusScanResult;
@@ -62,8 +62,6 @@ namespace VirusScanSimulatorEngineNamespace
                         Thread.Sleep(250 * random.Next(1, 5));
                         virusScanResult = CreateRandomVirusScanResult(random);
                         progress.Report(virusScanResult);
-
-    //                  CallMe(virusScanResult);
                         TimeSpan elapsed;
                         elapsed = DateTime.Now - start;
                         if (elapsed >= timeSpan) { break; }
@@ -75,7 +73,7 @@ namespace VirusScanSimulatorEngineNamespace
                 {
                     Thread.Sleep(10000);             // Default to 10 second pause
                     virusScanResult = CreateRandomVirusScanResult(random);
-                    CallMe(virusScanResult);               // Default to something
+                    progress.Report(virusScanResult);
                     TimeSpan elapsed;
                     elapsed = DateTime.Now - start;
                     //                  Console.WriteLine(elapsed);
@@ -88,29 +86,53 @@ namespace VirusScanSimulatorEngineNamespace
             String name = names[random.Next(0, names.Length - 1)];
             String infectedFile = files[random.Next(0, files.Count - 1)];
             double version = random.NextDouble();
-            VirusScanResult virusScanResult = new VirusScanResult(name, infectedFile, version);
+            Array values = Enum.GetValues(typeof(VirusScanResult.enumDisposition));
+            String randomDescription = buildRandomDescription(random);
+            VirusScanResult.enumDisposition randomDisposition = (VirusScanResult.enumDisposition)values.GetValue(random.Next(values.Length));
+            VirusScanResult virusScanResult = new VirusScanResult(name, infectedFile, version, randomDisposition, randomDescription);
             return virusScanResult;
         }
-        void ReadFiles(List<String> files, String path)
+        void ReadFiles(List<String> files, String[] paths)
         {
             try
             {
-                string[] fileEntries = Directory.GetFiles(path);
-                foreach (string file in fileEntries) {
-                    if (File.Exists(file)) {
-                        // This path is a file
-                        files.Add(file);
-                    } else if (Directory.Exists(path)) {
-                    }
-                    else
+                foreach (String path in paths)
+                {
+                    string[] fileEntries = Directory.GetFiles(path);
+                    foreach (string file in fileEntries)
                     {
-                        //Console.WriteLine("{0} is not a valid file or directory.", path);
+                        if (File.Exists(file))
+                        {
+                            // This path is a file
+                            files.Add(file);
+                        }
+                        else if (Directory.Exists(path))
+                        {
+                        }
+                        else
+                        {
+                            //Console.WriteLine("{0} is not a valid file or directory.", path);
+                        }
                     }
                 }
             } catch (Exception ex) {
                 files.Add("UNKNOWN FILE");
             }
+        }
 //          return files;
+        
+        private String buildRandomDescription(Random random)
+        {
+            String description;
+            if (random.Next() % 2 == 0)
+            {
+                description = fileVerbs[random.Next(0, fileVerbs.Length - 1)];
+                description += " " + fileTypes[random.Next(0, fileTypes.Length - 1)];
+            } else {
+                description = actions[random.Next(0, actions.Length - 1)];
+            }
+
+            return description;
         }
     }
 }

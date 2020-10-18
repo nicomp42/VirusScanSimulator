@@ -21,25 +21,23 @@ namespace VirusScanSimulator
 
         private async void button1_Click(object sender, EventArgs e)
         {
-            //            var progress = new Progress<string>(s => txtResults.Text += (s + Environment.NewLine));
-            var progress = new Progress<VirusScanResult>(s => { 
-                                                                int i; 
-                                                                txtResults.Text = (s.virusName + " : " + s.infectedFile + Environment.NewLine + txtResults.Text);
-                                                                lblVirusName.Text = s.virusName;
-                                                              }) ;
-//            await Task.Factory.StartNew(() => SecondThreadConcern.LongWork(progress),
-//                                        TaskCreationOptions.LongRunning);
+            var progress = new Progress<VirusScanResult>(virusScanResult => {processData(virusScanResult);}) ;
             VirusScanSimulatorEngine virusScanSimulatorEngine = new VirusScanSimulatorEngine();
-            virusScanSimulatorEngine.StartEngine(progress, CallMe, 30);
+            virusScanSimulatorEngine.StartEngine(progress, 30);
         }
-        private void CallMe(VirusScanResult virusScanResult)
+        private void processData(VirusScanResult virusScanResult )
         {
-            txtResults.AppendText(virusScanResult.virusName + "\n");
+            if (virusScanResult.disposition != VirusScanResult.enumDisposition.clean)
+            {
+                txtResults.Text = (virusScanResult.fileName + " : " + virusScanResult.virusName + Environment.NewLine + txtResults.Text);
+                lblVirusName.Text = virusScanResult.virusName;
+                lblDescription.Text = virusScanResult.description;
+            } else {
+                txtResults.Text = (virusScanResult.fileName + Environment.NewLine + txtResults.Text);
+                lblVirusName.Text = "";
+                lblDescription.Text = "";
+            }
         }
 
-        private void label1_Click(object sender, EventArgs e)
-        {
-
-        }
     }
 }
